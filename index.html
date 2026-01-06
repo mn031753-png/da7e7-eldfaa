@@ -3,15 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <title>دحيح الدفعة</title>
-
-  <!-- حل مشكلة حجم الشاشة -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     body {
       font-family: Arial, sans-serif;
       direction: rtl;
-      background-color: #f4f6f8;
+      background: linear-gradient(135deg, #74ebd5, #ACB6E5);
       margin: 0;
       padding: 0;
     }
@@ -31,50 +29,46 @@
     }
 
     .container {
-      max-width: 900px;
-      margin: auto;
+      max-width: 800px;
+      margin: 50px auto;
       background: white;
-      padding: 20px;
-      margin-top: 20px;
-      border-radius: 8px;
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-    h1, h2 {
+    h1 {
       color: #2c3e50;
+      margin-bottom: 20px;
     }
 
     p {
       font-size: 18px;
       line-height: 1.8;
+      margin-bottom: 30px;
     }
 
     button {
       background-color: #3498db;
       color: white;
       border: none;
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 5px;
+      padding: 12px 25px;
+      font-size: 18px;
+      border-radius: 8px;
       cursor: pointer;
+      transition: background 0.3s;
     }
 
     button:hover {
       background-color: #2980b9;
     }
 
-    input, select {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      margin-bottom: 15px;
-      font-size: 16px;
-    }
-
     footer {
       text-align: center;
       padding: 15px;
-      margin-top: 30px;
-      color: gray;
+      margin-top: 50px;
+      color: white;
     }
   </style>
 </head>
@@ -84,56 +78,18 @@
 <header>
   <h1>دحيح الدفعة</h1>
   <nav>
-    <p>
     <a href="about.html">عن المشروع</a>
-</p>
-
-    <a href="#student">بيانات الطالب</a>
-    <a href="plan">خطة المذاكرة</a>
+    <a href="data.html">بيانات الطالب</a>
   </nav>
 </header>
 
 <div class="container">
-
-  <section id="about">
-    <h2>عن المشروع</h2>
-    <p>
-      «دحيح الدفعة» هو موقع تعليمي يساعد الطالب على تنظيم المذاكرة
-      واقتراح خطة مناسبة حسب مستواه والمواد التي يدرسها،
-      بهدف تحسين التحصيل الدراسي بطريقة سهلة وبسيطة.
-    </p>
-  </section>
-
-  <section id="student">
-    <h2>بيانات الطالب</h2>
-
-    <label>اسم الطالب:</label>
-    <input type="text" placeholder="اكتب اسمك">
-
-    <label>الصف الدراسي:</label>
-    <select>
-      <option>الصف الأول الثانوي</option>
-      <option>الصف الثاني الثانوي</option>
-      <option>الصف الثالث الثانوي</option>
-    </select>
-
-    <label>المواد الدراسية:</label>
-    <input type="text" placeholder="مثال: عربي، رياضة، فيزياء">
-     
-    <a href="result.html">
-    <button>إنشاء خطة مذاكرة</button>
-    </a>
-  </section>
-
-  <section id="plan">
-    <h2>خطة المذاكرة</h2>
-    <p>
-      بعد إدخال بيانات الطالب، سيقوم الموقع بتحليل المعلومات
-      واقتراح خطة مذاكرة مناسبة لكل مادة.
-      (سيتم تطوير هذه الميزة في الخطوة القادمة)
-    </p>
-  </section>
-
+  <h1>المساعد الذكي للطالب</h1>
+  <p>
+    موقع يساعد الطالب على تنظيم المذاكرة
+    واقتراح خطة مناسبة بناءً على مستواه.
+  </p>
+  <a href="data.html"><button>ابدأ الآن</button></a>
 </div>
 
 <footer>
