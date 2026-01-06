@@ -1,28 +1,139 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <title>دحيح الدفعه</title>
+  <meta charset="UTF-8">
+  <title>دحيح الدفعة</title>
+
+  <!-- حل مشكلة حجم الشاشة -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      direction: rtl;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #2c3e50;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+
+    nav a {
+      color: white;
+      margin: 0 10px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      margin-top: 20px;
+      border-radius: 8px;
+    }
+
+    h1, h2 {
+      color: #2c3e50;
+    }
+
+    p {
+      font-size: 18px;
+      line-height: 1.8;
+    }
+
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      margin-top: 30px;
+      color: gray;
+    }
+  </style>
 </head>
+
 <body>
 
-    <h1>دحيح الدفعه</h1>
+<header>
+  <h1>دحيح الدفعة</h1>
+  <nav>
+    <a href="#about">عن المشروع</a>
+    <a href="#student">بيانات الطالب</a>
+    <a href="#plan">خطة المذاكرة</a>
+  </nav>
+</header>
 
-    <p>]
-        <h3>دحيح الدفعه موقع هيحسن دراجاتك</h3>.
-    </p>
+<div class="container">
 
-    <a href="data.html">
-    <button>ابدأ الآن</button>
-</a>
-
+  <section id="about">
+    <h2>عن المشروع</h2>
     <p>
-    <a href="about.html">عن المشروع</a>
-</p>
+      «دحيح الدفعة» هو موقع تعليمي يساعد الطالب على تنظيم المذاكرة
+      واقتراح خطة مناسبة حسب مستواه والمواد التي يدرسها،
+      بهدف تحسين التحصيل الدراسي بطريقة سهلة وبسيطة.
+    </p>
+  </section>
 
+  <section id="student">
+    <h2>بيانات الطالب</h2>
+
+    <label>اسم الطالب:</label>
+    <input type="text" placeholder="اكتب اسمك">
+
+    <label>الصف الدراسي:</label>
+    <select>
+      <option>الصف الأول الثانوي</option>
+      <option>الصف الثاني الثانوي</option>
+      <option>الصف الثالث الثانوي</option>
+    </select>
+
+    <label>المواد الدراسية:</label>
+    <input type="text" placeholder="مثال: عربي، رياضة، فيزياء">
+
+    <button>إنشاء خطة مذاكرة</button>
+  </section>
+
+  <section id="plan">
+    <h2>خطة المذاكرة</h2>
+    <p>
+      بعد إدخال بيانات الطالب، سيقوم الموقع بتحليل المعلومات
+      واقتراح خطة مذاكرة مناسبة لكل مادة.
+      (سيتم تطوير هذه الميزة في الخطوة القادمة)
+    </p>
+  </section>
+
+</div>
+
+<footer>
+  مشروع طلابي – مسابقة البرمجة والذكاء الاصطناعي
+</footer>
 
 </body>
-
 </html>
-
-
