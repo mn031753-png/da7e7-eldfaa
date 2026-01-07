@@ -1,66 +1,49 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta charset="UTF-8">
-  <title>دحيح الدفعة - بيانات الطالب</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>دحيح الدفعة - بيانات الطالب</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      direction: rtl;
-      background: linear-gradient(135deg, #f6d365, #fda085);
-      margin: 0;
-      padding: 0;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 50px auto;
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-
-    h1 {
-      color: #2c3e50;
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      font-size: 18px;
-      margin-top: 15px;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      font-size: 16px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-
-    button {
-      background-color: #3498db;
-      color: white;
-      border: none;
-      padding: 12px 25px;
-      font-size: 18px;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 20px;
-      transition: background 0.3s;
-    }
-
-    button:hover {
-      background-color: #2980b9;
-    }
-
-  </style>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    direction: rtl;
+    background: linear-gradient(135deg, #f6d365, #fda085);
+    margin: 0;
+    padding: 0;
+  }
+  .container {
+    max-width: 800px;
+    margin: 40px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  label {
+    display: block;
+    font-size: 18px;
+    margin-top: 15px;
+  }
+  select {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    margin-top: 5px;
+    border-radius: 6px;
+  }
+  button {
+    margin-top: 25px;
+    padding: 12px 30px;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    background-color: #3498db;
+    color: white;
+    cursor: pointer;
+  }
+</style>
 </head>
 
 <body>
@@ -68,23 +51,111 @@
 <div class="container">
   <h1>بيانات الطالب</h1>
 
-  <label>اسم الطالب:</label>
-  <input type="text" placeholder="اكتب اسمك" required>
-
+  <!-- اختيار الصف -->
   <label>الصف الدراسي:</label>
-  <select required>
-    <option value="">اختر الصف الدراسي</option>
-    <option>الصف الأول الثانوي</option>
-    <option>الصف الثاني الثانوي</option>
-    <option>الصف الثالث الثانوي</option>
+  <select id="grade" onchange="onGradeChange()">
+    <option value="">اختر الصف</option>
+    <option value="first">الصف الأول الثانوي</option>
+    <option value="second">الصف الثاني الثانوي</option>
+    <option value="third">الصف الثالث الثانوي</option>
   </select>
 
-  <label>المواد الدراسية:</label>
-  <input type="text" placeholder="مثال: عربي، رياضة، فيزياء" required>
+  <!-- اختيار الشعبة (يظهر فقط في تانية وتالتة) -->
+  <div id="sectionDiv" style="display:none;">
+    <label>الشعبة:</label>
+    <select id="section" onchange="showSubjects()">
+      <option value="">اختر الشعبة</option>
+      <option value="science">علمي علوم</option>
+      <option value="math">علمي رياضة</option>
+      <option value="literary">أدبي</option>
+    </select>
+  </div>
 
-  <a href="result.html"><button>احصل على الخطة</button></a>
+  <!-- المواد -->
+  <div id="subjectsDiv"></div>
 
+  <button onclick="goToResult()">احصل على الخطة</button>
 </div>
+
+<script>
+function onGradeChange() {
+  const grade = document.getElementById("grade").value;
+  document.getElementById("subjectsDiv").innerHTML = "";
+
+  if (grade === "first") {
+    document.getElementById("sectionDiv").style.display = "none";
+    showSubjects();
+  } else if (grade === "second" || grade === "third") {
+    document.getElementById("sectionDiv").style.display = "block";
+  }
+}
+
+function showSubjects() {
+  const grade = document.getElementById("grade").value;
+  const section = document.getElementById("section")?.value;
+  const div = document.getElementById("subjectsDiv");
+
+  let subjects = [];
+
+  if (grade === "first") {
+    subjects = [
+      "اللغة العربية",
+      "اللغة الإنجليزية",
+      "الرياضيات",
+      "العلوم المتكاملة",
+      "التاريخ",
+      "الفلسفة والمنطق"
+    ];
+  }
+
+  if (grade === "second" || grade === "third") {
+    if (section === "science") {
+      subjects = ["عربي", "إنجليزي", "فيزياء", "كيمياء", "أحياء"];
+    } else if (section === "math") {
+      subjects = ["عربي", "إنجليزي", "رياضيات", "فيزياء", "كيمياء"];
+    } else if (section === "literary") {
+      subjects = ["عربي", "إنجليزي", "تاريخ", "جغرافيا", "إحصاء"];
+    }
+  }
+
+  if (subjects.length === 0) {
+    div.innerHTML = "";
+    return;
+  }
+
+  let html = "<label>اختر المواد:</label>";
+  subjects.forEach(s => {
+    html += `
+      <div>
+        <input type="checkbox" class="subject" value="${s}"> ${s}
+      </div>
+    `;
+  });
+
+  div.innerHTML = html;
+}
+
+function goToResult() {
+  const grade = document.getElementById("grade").value;
+  const section = document.getElementById("section")?.value || "";
+  const checked = document.querySelectorAll(".subject:checked");
+
+  if (grade === "" || checked.length === 0) {
+    alert("من فضلك اختر البيانات كاملة");
+    return;
+  }
+
+  const subjects = [];
+  checked.forEach(c => subjects.push(c.value));
+
+  localStorage.setItem("grade", grade);
+  localStorage.setItem("section", section);
+  localStorage.setItem("subjects", JSON.stringify(subjects));
+
+  window.location.href = "result.html";
+}
+</script>
 
 </body>
 </html>
+
