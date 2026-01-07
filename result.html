@@ -20,44 +20,29 @@
       background: white;
       padding: 30px;
       border-radius: 12px;
-      text-align: center;
+      text-align: right;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-    h1, h2 {
+    h1 {
+      text-align: center;
       color: #2c3e50;
     }
 
-    p, li {
+    ul {
       font-size: 18px;
       line-height: 1.8;
-    }
-
-    ul {
-      text-align: right;
-      padding-right: 20px;
-    }
-
-    a {
-      color: #3498db;
-      text-decoration: none;
-      font-weight: bold;
     }
 
     button {
       background-color: #3498db;
       color: white;
       border: none;
-      padding: 12px 25px;
-      font-size: 18px;
-      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 6px;
       cursor: pointer;
       margin-top: 20px;
-      transition: background 0.3s;
-    }
-
-    button:hover {
-      background-color: #2980b9;
     }
   </style>
 </head>
@@ -65,20 +50,53 @@
 <body>
 
 <div class="container">
-  <h1>خطة المذاكرة للطالب</h1>
-
-  <p>هنا مثال لخطة مذاكرة مبدئية لكل مادة حسب الصف الدراسي والمواد المدخلة:</p>
-
-  <ul>
-    <li>العربي: 1 ساعة يوميًا + مراجعة قبل الامتحانات</li>
-    <li>الرياضة: 45 دقيقة يوميًا + تمارين تطبيقية</li>
-    <li>الفيزياء: ساعة ونصف يوميًا + حل مسائل</li>
-    <li>الكيمياء: ساعة يوميًا + تلخيص الدروس</li>
-  </ul>
+  <h1>خطة المذاكرة المقترحة</h1>
+  <div id="plan"></div>
 
   <a href="data.html"><button>تعديل البيانات</button></a>
-  <a href="index.html"><button>العودة للرئيسية</button></a>
 </div>
+
+<script>
+  const grade = localStorage.getItem("studentGrade");
+  const planDiv = document.getElementById("plan");
+
+  if (grade === "first") {
+    planDiv.innerHTML = `
+      <h3>الصف الأول الثانوي</h3>
+      <ul>
+        <li>المذاكرة ساعتان يوميًا</li>
+        <li>التركيز على فهم الدروس</li>
+        <li>حل واجبات بعد كل درس</li>
+        <li>مراجعة أسبوعية بسيطة</li>
+      </ul>
+    `;
+  } 
+  else if (grade === "second") {
+    planDiv.innerHTML = `
+      <h3>الصف الثاني الثانوي</h3>
+      <ul>
+        <li>3 ساعات مذاكرة يوميًا</li>
+        <li>تقسيم الوقت بين المواد الأساسية</li>
+        <li>حل امتحانات سابقة</li>
+        <li>تحديد نقاط الضعف</li>
+      </ul>
+    `;
+  } 
+  else if (grade === "third") {
+    planDiv.innerHTML = `
+      <h3>الصف الثالث الثانوي</h3>
+      <ul>
+        <li>5–6 ساعات مذاكرة يوميًا</li>
+        <li>مراجعة شاملة للمواد</li>
+        <li>حل نماذج امتحانات رسمية</li>
+        <li>تحليل الأخطاء باستمرار</li>
+      </ul>
+    `;
+  } 
+  else {
+    planDiv.innerHTML = "<p>لم يتم العثور على بيانات الطالب.</p>";
+  }
+</script>
 
 </body>
 </html>
