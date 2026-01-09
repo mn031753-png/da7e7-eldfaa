@@ -1,161 +1,142 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<title>دحيح الدفعة - بيانات الطالب</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    direction: rtl;
-    background: linear-gradient(135deg, #f6d365, #fda085);
-    margin: 0;
-    padding: 0;
-  }
-  .container {
-    max-width: 800px;
-    margin: 40px auto;
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  }
-  label {
-    display: block;
-    font-size: 18px;
-    margin-top: 15px;
-  }
-  select {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    margin-top: 5px;
-    border-radius: 6px;
-  }
-  button {
-    margin-top: 25px;
-    padding: 12px 30px;
-    font-size: 18px;
-    border: none;
-    border-radius: 8px;
-    background-color: #3498db;
-    color: white;
-    cursor: pointer;
-  }
-</style>
+    <meta charset="UTF-8">
+    <title>نظام المذاكرة الذكي - AI Study Planner</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; margin: 20px; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; text-align: center; }
+        .student-info { background: #e8f4f8; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-right: 5px solid #3498db; }
+        .plan-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .plan-table th, .plan-table td { border: 1px solid #ddd; padding: 12px; text-align: center; }
+        .plan-table th { background-color: #3498db; color: white; }
+        .ai-section { margin-top: 30px; text-align: center; padding: 20px; border: 2px dashed #3498db; border-radius: 10px; }
+        video { width: 100%; max-width: 400px; border-radius: 10px; margin-top: 10px; }
+        .btn { background: #27ae60; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        .btn:disabled { background: #bdc3c7; }
+        #status { font-weight: bold; margin-top: 10px; }
+    </style>
 </head>
-
 <body>
 
 <div class="container">
-  <h1>بيانات الطالب</h1>
+    <h1>🚀 مساعد المذاكرة الذكي</h1>
 
-  <!-- اختيار الصف -->
-  <label>الصف الدراسي:</label>
-  <select id="grade" onchange="onGradeChange()">
-    <option value="">اختر الصف</option>
-    <option value="first">الصف الأول الثانوي</option>
-    <option value="second">الصف الثاني الثانوي</option>
-    <option value="third">الصف الثالث الثانوي</option>
-  </select>
+    <div class="student-info" id="studentDisplay">
+        </div>
 
-  <!-- اختيار الشعبة (يظهر فقط في تانية وتالتة) -->
-  <div id="sectionDiv" style="display:none;">
-    <label>الشعبة:</label>
-    <select id="section" onchange="showSubjects()">
-      <option value="">اختر الشعبة</option>
-      <option value="science">علمي علوم</option>
-      <option value="math">علمي رياضة</option>
-      <option value="literary">أدبي</option>
-    </select>
-  </div>
+    <div id="scheduleSection">
+        <h3>📅 خطة المذاكرة المقترحة</h3>
+        <table class="plan-table" id="planTable">
+            <thead>
+                <tr>
+                    <th>المادة</th>
+                    <th>المدة</th>
+                    <th>الحالة</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
 
-  <!-- المواد -->
-  <div id="subjectsDiv"></div>
-
-  <button onclick="goToResult()">احصل على الخطة</button>
+    <div class="ai-section">
+        <h3>🔍 التحقق الذكي (تصوير الكتاب)</h3>
+        <p>قم بتصوير كتاب المادة الحالية للانتقال للمادة التالية</p>
+        <video id="webcam" autoplay playsinline></video>
+        <br>
+        <button class="btn" onclick="analyzeImage()" id="scanBtn">فحص الكتاب الآن</button>
+        <div id="status">انتظار تحميل نموذج الذكاء الاصطناعي...</div>
+    </div>
 </div>
 
 <script>
-function onGradeChange() {
-  const grade = document.getElementById("grade").value;
-  document.getElementById("subjectsDiv").innerHTML = "";
+    // 1. بيانات الطالب (يمكن تعديلها)
+    const studentData = {
+        name: "أحمد محمد",
+        grade: "الثانوية العامة",
+        subjects: ["الفيزياء", "اللغة العربية", "الرياضيات"],
+        dailyHours: 6
+    };
 
-  if (grade === "first") {
-    document.getElementById("sectionDiv").style.display = "none";
-    showSubjects();
-  } else if (grade === "second" || grade === "third") {
-    document.getElementById("sectionDiv").style.display = "block";
-  }
-}
+    let currentSubjectIndex = 0;
+    let model;
 
-function showSubjects() {
-  const grade = document.getElementById("grade").value;
-  const section = document.getElementById("section")?.value;
-  const div = document.getElementById("subjectsDiv");
+    // 2. عرض بيانات الطالب والجدول
+    function init() {
+        document.getElementById('studentDisplay').innerHTML = `
+            <strong>الاسم:</strong> ${studentData.name} | 
+            <strong>المرحلة:</strong> ${studentData.grade} | 
+            <strong>إجمالي الساعات:</strong> ${studentData.dailyHours} ساعات
+        `;
+        renderTable();
+        setupCamera();
+        loadModel();
+    }
 
-  let subjects = [];
+    function renderTable() {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = "";
+        const hoursPerSubject = (studentData.dailyHours / studentData.subjects.length).toFixed(1);
+        
+        studentData.subjects.forEach((sub, index) => {
+            const row = `
+                <tr style="${index === currentSubjectIndex ? 'background:#fff9c4; font-weight:bold;' : ''}">
+                    <td>${sub}</td>
+                    <td>${hoursPerSubject} ساعة</td>
+                    <td>${index < currentSubjectIndex ? '✅ تم' : (index === currentSubjectIndex ? '⏳ جاري المذاكرة' : '🔒 معلق')}</td>
+                </tr>
+            `;
+            tbody.innerHTML += row;
+        });
+    }
 
-  if (grade === "first") {
-    subjects = [
-      "اللغة العربية",
-      "اللغة الإنجليزية",
-      "الرياضيات",
-      "العلوم المتكاملة",
-      "التاريخ",
-      "الفلسفة والمنطق"
-    ];
-  }
+    // 3. إعداد الكاميرا
+    async function setupCamera() {
+        const video = document.getElementById('webcam');
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = stream;
+    }
 
-  if (grade === "second" || grade === "third") {
-    if (section === "science") {
-      subjects = ["عربي", "إنجليزي", "فيزياء", "كيمياء", "أحياء"];
-    } else if (section === "math") {
-      subjects = ["عربي", "إنجليزي", "رياضيات", "فيزياء", "كيمياء"];
-    } else if (section === "literary") {
-      subjects = ["عربي", "إنجليزي", "تاريخ", "جغرافيا", "إحصاء"];
-    }
-  }
+    // 4. تحميل نموذج AI (MobileNet)
+    async function loadModel() {
+        model = await mobilenet.load();
+        document.getElementById('status').innerText = "الذكاء الاصطناعي جاهز للفحص!";
+        document.getElementById('status').style.color = "green";
+    }
 
-  if (subjects.length === 0) {
-    div.innerHTML = "";
-    return;
-  }
+    // 5. تحليل الصورة وتشخيص الكتاب
+    async function analyzeImage() {
+        const video = document.getElementById('webcam');
+        const status = document.getElementById('status');
+        status.innerText = "جاري التحقق من الكتاب...";
 
-  let html = "<label>اختر المواد:</label>";
-  subjects.forEach(s => {
-    html += `
-      <div>
-        <input type="checkbox" class="subject" value="${s}"> ${s}
-      </div>
-    `;
-  });
+        const predictions = await model.classify(video);
+        
+        // منطق التحقق: نبحث عن كلمات دلالية مثل "book" أو "notebook"
+        const isBook = predictions.some(p => 
+            p.className.includes('book') || p.className.includes('binder') || p.className.includes('paper')
+        );
 
-  div.innerHTML = html;
-}
+        if (isBook) {
+            status.innerText = `✅ تم التحقق! أحسنت، انتقل للمادة التالية.`;
+            status.style.color = "green";
+            if (currentSubjectIndex < studentData.subjects.length - 1) {
+                currentSubjectIndex++;
+                setTimeout(() => { renderTable(); }, 2000);
+            } else {
+                alert("تهانينا! أنهيت خطة اليوم بنجاح.");
+            }
+        } else {
+            status.innerText = "❌ لم يتم التعرف على الكتاب. حاول تقريبه من الكاميرا.";
+            status.style.color = "red";
+        }
+    }
 
-function goToResult() {
-  const grade = document.getElementById("grade").value;
-  const section = document.getElementById("section")?.value || "";
-  const checked = document.querySelectorAll(".subject:checked");
-
-  if (grade === "" || checked.length === 0) {
-    alert("من فضلك اختر البيانات كاملة");
-    return;
-  }
-
-  const subjects = [];
-  checked.forEach(c => subjects.push(c.value));
-
-  localStorage.setItem("grade", grade);
-  localStorage.setItem("section", section);
-  localStorage.setItem("subjects", JSON.stringify(subjects));
-
-  window.location.href = "result.html";
-}
+    window.onload = init;
 </script>
 
 </body>
 </html>
-
