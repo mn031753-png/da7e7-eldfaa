@@ -1,104 +1,65 @@
-// Function to generate a student schedule based on data and constraints, expanded with different study levels and specializations.
-function generateStudentSchedule(studentData) {
-    const MAX_HOURS_PER_DAY = 6;
-    const const studyLevel = studentData.studyLevel;
-    const specialization = studentData.specialization;
 
-    // Define predefined subjects by specialization and level
-    const subjectMap = {
-        "اولى ثانوي": {
-            "عام": [
-                { name: "اللغة العربية", hours: 2 },
-                { name: "اللغة الإنجليزية", hours: 2 },
-                { name: "الرياضيات", hours: 2 },
-                { name: "الأحياء", hours: 1 },
-                { name: "الفيزياء", hours: 1 },
-                { name: "الكيمياء", hours: 1 },
-                { name: "التاريخ", hours: 1 },
-                { name: "الجغرافيا", hours: 1 }
-            ]
-        },
-        "ثانية ثانوي": {
-            "علمي علوم": [
-                { name: "اللغة العربية", hours: 2 },
-                { name: "اللغة الإنجليزية", hours: 2 },
-                { name: "الأحياء", hours: 3 },
-                { name: "الكيمياء", hours: 3 },
-                { name: "الفيزياء", hours: 3 },
-                { name: "الرياضيات", hours: 2 }
-            ],
-            "علمي رياضة": [
-                { name: "اللغة العربية", hours: 2 },
-                { name: "اللغة الإنجليزية", hours: 2 },
-                { name: "الرياضيات التطبيقية", hours: 3 },
-                { name: "الرياضيات البحتة", hours: 3 },
-                { name: "الفيزياء", hours: 3 },
-                { name: "الكيمياء", hours: 3 }
-            ],
-            "ادبي": [
-                { name: "اللغة العربية", hours: 3 },
-                { name: "اللغة الإنجليزية", hours: 3 },
-                { name: "التاريخ", hours: 3 },
-                { name: "الجغرافيا", hours: 3 },
-                { name: "الفلسفة", hours: 2 }
-            ]
-        },
-        "ثالثة ثانوي": {
-            "علمي علوم": [
-                { name: "اللغة العربية", hours: 2 },
-                { name: "اللغة الإنجليزية", hours: 2 },
-                { name: "الأحياء", hours: 4 },
-                { name: "الجيولوجيا", hours: 4 },
-                { name: "الكيمياء", hours: 4 },
-                { name: "الفيزياء", hours: 4 }
-            ],
-            "علمي رياضة": [
-                { name: "اللغة العربية", hours: 2 },
-                { name: "اللغة الإنجليزية", hours: 2 },
-                { name: "الرياضيات البحتة", hours: 4 },
-                { name: "الرياضيات التطبيقية", hours: 4 },
-                { name: "الفيزياء", hours: 4 },
-                { name: "الكيمياء", hours: 4 }
-            ],
-            "ادبي": [
-                { name: "اللغة العربية", hours: 3 },
-                { name: "اللغة الإنجليزية", hours: 3 },
-                { name: "التاريخ", hours: 3 },
-                { name: "الجغرافيا", hours: 3 },
-                { name: "الفلسفة والمنطق", hours: 2 },
-                { name: "علم النفس والاجتماع", hours: 2 }
-            ]
-        }
-    };
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>دحيح الدفعة - خطة المذاكرة</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body { font-family: Arial,sans-serif; direction:rtl; background:linear-gradient(135deg,#a1c4fd,#c2e9fb); margin:0; padding:0;}
+  .container { max-width:800px; margin:40px auto; background:white; padding:30px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.15);}
+  h1 {text-align:center;color:#2c3e50;}
+  ul {font-size:18px; line-height:1.8;}
+  button {background:#3498db;color:white;border:none;padding:10px 20px;font-size:16px;border-radius:6px;cursor:pointer;margin-top:20px;}
+</style>
+</head>
+<body>
 
-    const subjects = subjectMap[studyLevel][specialization] || subjectMap[studyLevel]["عام"] || [];
-    let schedule = {};
-    let remainingHours = MAX_HOURS_PER_DAY;
-    const totalHours = subjects.reduce((acc, subject) => acc + subject.hours, 0);
+<div class="container">
+  <h1>خطة المذاكرة الأسبوعية</h1>
+  <div id="plan"></div>
+  <a href="data.html"><button>تعديل البيانات</button></a>
+</div>
 
-    // AI-like distribution (proportional while respecting daily limit)
-    subjects.forEach(subject => {
-        const proportionalHours = (subject.hours / totalHours) * MAX_HOURS_PER_DAY;
-        let subjectHours = Math.min(proportionalHours, remainingHours);
-        
-        if (subjectHours > 0) {
-            // Simple rounding, more complex algorithms could optimize this
-            subjectHours = Math.round(subjectHours * 2) / 2; // Round to nearest 0.5 hours
-            if (subjectHours > 0 && remainingHours >= subjectHours) {
-                schedule[subject.name] = subjectHours;
-                remainingHours -= subjectHours;
-            }
-        }
-    });
+<script>
+const grade = localStorage.getItem("grade");
+const section = localStorage.getItem("section");
+const subjects = JSON.parse(localStorage.getItem("subjects"));
+const planDiv = document.getElementById("plan");
 
-    return schedule;
+const scienceSubjects = ["فيزياء","كيمياء","أحياء","رياضيات","العلوم المتكاملة"];
+const literarySubjects = ["تاريخ","جغرافيا","فلسفة ومنطق","إحصاء","اللغة العربية"];
+
+if(!grade || !subjects) { planDiv.innerHTML="<p>لا توجد بيانات كافية.</p>"; }
+else {
+  let dailyHours = 2.5; 
+  if(grade==="second") dailyHours=3.5;
+  if(grade==="third") dailyHours=5;
+
+  // الأوزان
+  let totalWeight=0; const subjectWeights={};
+  subjects.forEach(sub=>{
+    if(scienceSubjects.includes(sub)) subjectWeights[sub]=2;
+    else subjectWeights[sub]=1;
+    totalWeight+=subjectWeights[sub];
+  });
+
+  const days=["السبت","الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس"];
+  let html=`<p><strong>عدد ساعات المذاكرة اليومية:</strong> ${dailyHours} ساعة</p>`;
+  html+=`<h3>📅 جدول المذاكرة الأسبوعي:</h3>`;
+
+  days.forEach(day=>{
+    html+=`<h4>${day}</h4><ul>`;
+    subjects.forEach(sub=>{
+      const time=((subjectWeights[sub]/totalWeight)*dailyHours).toFixed(1);
+      html+=`<li>${sub}: ${time} ساعة</li>`;
+    });
+    html+="</ul>";
+  });
+
+  planDiv.innerHTML=html;
 }
+</script>
 
-// Example student data (replace with your actual data)
-const studentData = {
-    studyLevel: "ثالثة ثانوي",
-    specialization: "علمي رياضة"
-};
-
-const studentSchedule = generateStudentSchedule(studentSchedule);
-console.log(studentSchedule);
+</body>
+</html>
